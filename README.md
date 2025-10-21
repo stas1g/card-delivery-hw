@@ -1,1 +1,1 @@
-![Java CI with Gradle](https://github.com/your-username/card-delivery/actions/workflows/gradle.yml/badge.svg)
+![Java CI with Gradle](https://github.com/stas1g/card-delivery/actions/workflows/gradle.yml/badge.svg)
