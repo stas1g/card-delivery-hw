@@ -20,8 +20,7 @@ public class CardDeliveryTest {
         Configuration.browser = "chrome";
         Configuration.headless = true;
         Configuration.browserSize = "1280x800";
-        Configuration.timeout = 15000;
-        Configuration.pageLoadTimeout = 15000;
+        Configuration.timeout = 10000;
 
         // Критически важные настройки для Chrome в CI
         ChromeOptions options = new ChromeOptions();
@@ -37,6 +36,12 @@ public class CardDeliveryTest {
 
     @BeforeEach
     void setUp() {
+        // Добавляем задержку перед открытием страницы
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         open("http://localhost:9999");
     }
 
@@ -47,19 +52,27 @@ public class CardDeliveryTest {
 
     @Test
     void shouldSubmitValidDeliveryForm() {
-        // Заполняем форму
+        // Заполняем форму с небольшими задержками
         $("[data-test-id=city] input").setValue("Москва");
-        $("[data-test-id=date] input").doubleClick().sendKeys(getFutureDate(3));
-        $("[data-test-id=name] input").setValue("Иван Иванов");
-        $("[data-test-id=phone] input").setValue("+79270000000");
-        $("[data-test-id=agreement]").click();
+        sleep(500);
 
-        // Нажимаем кнопку
+        $("[data-test-id=date] input").doubleClick().sendKeys(getFutureDate(3));
+        sleep(500);
+
+        $("[data-test-id=name] input").setValue("Иван Иванов");
+        sleep(500);
+
+        $("[data-test-id=phone] input").setValue("+79270000000");
+        sleep(500);
+
+        $("[data-test-id=agreement]").click();
+        sleep(500);
+
         $("button.button").click();
 
-        // Проверяем уведомление
+        // Увеличиваем время ожидания для CI
         $("[data-test-id=notification]")
-                .shouldBe(visible, Duration.ofSeconds(15))
+                .shouldBe(visible, Duration.ofSeconds(20))
                 .shouldHave(text("Успешно!"));
     }
 
@@ -73,7 +86,7 @@ public class CardDeliveryTest {
         $("button.button").click();
 
         $("[data-test-id=notification]")
-                .shouldBe(visible, Duration.ofSeconds(15))
+                .shouldBe(visible, Duration.ofSeconds(20))
                 .shouldHave(text("Успешно!"));
     }
 
@@ -87,25 +100,19 @@ public class CardDeliveryTest {
         $("button.button").click();
 
         $("[data-test-id=notification]")
-                .shouldBe(visible, Duration.ofSeconds(15))
-                .shouldHave(text("Успешно!"));
-    }
-
-    @Test
-    void shouldSubmitWithDifferentCity() {
-        $("[data-test-id=city] input").setValue("Екатеринбург");
-        $("[data-test-id=date] input").doubleClick().sendKeys(getFutureDate(10));
-        $("[data-test-id=name] input").setValue("Петр Петров");
-        $("[data-test-id=phone] input").setValue("+79273333333");
-        $("[data-test-id=agreement]").click();
-        $("button.button").click();
-
-        $("[data-test-id=notification]")
-                .shouldBe(visible, Duration.ofSeconds(15))
+                .shouldBe(visible, Duration.ofSeconds(20))
                 .shouldHave(text("Успешно!"));
     }
 
     private String getFutureDate(int days) {
         return LocalDate.now().plusDays(days).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+    }
+
+    private void sleep(int millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

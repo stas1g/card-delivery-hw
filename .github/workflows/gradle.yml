@@ -19,25 +19,41 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
 
-    - name: Setup Chrome
+    - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y google-chrome-stable
+        sudo apt-get install -y google-chrome-stable curl
         
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
       
-    - name: Start application and test
+    - name: Test application
       run: |
+        # Запускаем приложение и тесты в одном шаге
+        set -e
+        
         # Запускаем приложение в фоне
+        echo "Starting application..."
         java -jar ./artifacts/app-card-delivery.jar &
         APP_PID=$!
         
-        # Ждем 15 секунд чтобы приложение точно запустилось
+        # Даем приложению время на запуск
+        echo "Waiting for application to start..."
         sleep 15
         
+        # Проверяем, что приложение запустилось
+        echo "Checking application status..."
+        if curl -s -f http://localhost:9999 > /dev/null; then
+          echo "✅ Application started successfully"
+        else
+          echo "❌ Application failed to start"
+          exit 1
+        fi
+        
         # Запускаем тесты
+        echo "Running tests..."
         ./gradlew test --info -Dselenide.headless=true
         
         # Останавливаем приложение
-        kill $APP_PID
+        echo "Stopping application..."
+        kill $APP_PID 2>/dev/null || true
