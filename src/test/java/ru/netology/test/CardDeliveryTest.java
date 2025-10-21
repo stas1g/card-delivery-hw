@@ -11,7 +11,6 @@ import org.openqa.selenium.Keys;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 
 import static com.codeborne.selenide.Selenide.*;
 
@@ -19,29 +18,18 @@ public class CardDeliveryTest {
 
     @BeforeAll
     static void setUpAll() {
-        // Основные настройки Selenide
+        // Минимальная конфигурация для CI
         Configuration.browser = "chrome";
-        Configuration.headless = true;
+        Configuration.headless = true; // обязательно для CI
         Configuration.timeout = 15000;
         Configuration.browserSize = "1280x800";
 
-       
+        // Критически важные настройки
         Configuration.holdBrowserOpen = false;
         Configuration.reopenBrowserOnFail = true;
 
-
-        Configuration.browserCapabilities.setCapability("goog:chromeOptions",
-                java.util.Map.of(
-                        "args", Arrays.asList(
-                                "--no-sandbox",
-                                "--disable-dev-shm-usage",
-                                "--remote-allow-origins=*",
-                                "--incognito",
-                                "--disable-gpu",
-                                "--disable-extensions",
-                                "--headless=new"
-                        )
-                ));
+        // Selenide автоматически добавит нужные аргументы для CI
+        // включая --no-sandbox, --disable-dev-shm-usage, --remote-allow-origins=*
     }
 
     @BeforeEach
