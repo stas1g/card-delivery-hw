@@ -2,6 +2,7 @@ package ru.netology.test;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Configuration;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,7 @@ import org.openqa.selenium.Keys;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 
 import static com.codeborne.selenide.Selenide.*;
 
@@ -17,18 +19,39 @@ public class CardDeliveryTest {
 
     @BeforeAll
     static void setUpAll() {
+        // Основные настройки Selenide
         Configuration.browser = "chrome";
-        Configuration.headless = false; // для отладки
+        Configuration.headless = true;
         Configuration.timeout = 15000;
         Configuration.browserSize = "1280x800";
-        // Важные настройки для стабильности
+
+        // Критически важные настройки для стабильности
         Configuration.holdBrowserOpen = false;
         Configuration.reopenBrowserOnFail = true;
+
+        // Правильные W3C-совместимые настройки Chrome
+        Configuration.browserCapabilities.setCapability("goog:chromeOptions",
+                java.util.Map.of(
+                        "args", Arrays.asList(
+                                "--no-sandbox",
+                                "--disable-dev-shm-usage",
+                                "--remote-allow-origins=*",
+                                "--incognito",
+                                "--disable-gpu",
+                                "--disable-extensions"
+                        )
+                ));
     }
 
     @BeforeEach
     void setUp() {
         open("http://localhost:9999");
+    }
+
+    @AfterEach
+    void tearDown() {
+        // Обязательно закрываем браузер после каждого теста
+        closeWebDriver();
     }
 
     private String generateDate(int days) {
