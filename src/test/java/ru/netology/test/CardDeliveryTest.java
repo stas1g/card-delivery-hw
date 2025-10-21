@@ -25,11 +25,11 @@ public class CardDeliveryTest {
         Configuration.timeout = 15000;
         Configuration.browserSize = "1280x800";
 
-        // Критически важные настройки для стабильности
+       
         Configuration.holdBrowserOpen = false;
         Configuration.reopenBrowserOnFail = true;
 
-        // Правильные W3C-совместимые настройки Chrome
+
         Configuration.browserCapabilities.setCapability("goog:chromeOptions",
                 java.util.Map.of(
                         "args", Arrays.asList(
@@ -38,7 +38,8 @@ public class CardDeliveryTest {
                                 "--remote-allow-origins=*",
                                 "--incognito",
                                 "--disable-gpu",
-                                "--disable-extensions"
+                                "--disable-extensions",
+                                "--headless=new"
                         )
                 ));
     }
