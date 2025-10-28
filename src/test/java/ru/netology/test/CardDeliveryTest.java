@@ -34,7 +34,7 @@ public class CardDeliveryTest {
 
         $("[data-test-id=notification]")
                 .shouldBe(visible, Duration.ofSeconds(15))
-                .shouldHave(exactText("Успешно!\nВстреча успешно запланирована на " + meetingDate));
+                .shouldHave(exactText("Успешно!\nВстреча успешно забронирована на " + meetingDate));
     }
 
     @Test
@@ -51,7 +51,7 @@ public class CardDeliveryTest {
 
         $("[data-test-id=notification]")
                 .shouldBe(visible, Duration.ofSeconds(15))
-                .shouldHave(exactText("Успешно!\nВстреча успешно запланирована на " + meetingDate));
+                .shouldHave(exactText("Успешно!\nВстреча успешно забронирована на " + meetingDate));
     }
 
     @Test
@@ -68,7 +68,7 @@ public class CardDeliveryTest {
 
         $("[data-test-id=notification]")
                 .shouldBe(visible, Duration.ofSeconds(15))
-                .shouldHave(exactText("Успешно!\nВстреча успешно запланирована на " + meetingDate));
+                .shouldHave(exactText("Успешно!\nВстреча успешно забронирована на " + meetingDate));
     }
 
     private String getFutureDate(int days) {
